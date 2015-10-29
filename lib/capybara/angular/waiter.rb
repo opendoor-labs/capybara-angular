@@ -56,13 +56,13 @@ module Capybara
           var el = document.querySelector('[ng-app], [data-ng-app]');
 
           function ready(fn) {
-            if (document.readyState != 'loading'){
+            if (document.readyState !== 'loading'){
               fn();
             } else if (document.addEventListener) {
               document.addEventListener('DOMContentLoaded', fn);
             } else {
               document.attachEvent('onreadystatechange', function() {
-                if (document.readyState != 'loading')
+                if (document.readyState !== 'loading')
                   fn();
               });
             }
