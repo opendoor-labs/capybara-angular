@@ -50,13 +50,18 @@ module Capybara
           var el = document.querySelector('[ng-app], [data-ng-app]') || document.querySelector('body');
           window.angularReady = false;
 
-          if ((typeof angular === 'undefined') || !angular.element(document.querySelector('[ng-app], [data-ng-app]')).length > 0)
+          if (typeof angular === 'undefined')
             return;
 
           var el = document.querySelector('[ng-app], [data-ng-app]');
+          if (!el)
+            return;
 
           if (angular.getTestability) {
-            angular.getTestability(el).whenStable(function() { window.angularReady = true; });
+            try {
+              angular.getTestability(el).whenStable(function() { window.angularReady = true; });
+            }
+            catch(e) { }
           } else {
             var $browser = angular.element(el).injector().get('$browser');
 
