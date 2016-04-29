@@ -50,7 +50,7 @@ module Capybara
         page.execute_script <<-JS
           window.angularReady = false;
 
-          if ((typeof angular === 'undefined') || !angular.element(document.querySelector('[ng-app], [data-ng-app]')).length > 0)
+          if ((typeof angular === 'undefined') || angular.element(document.querySelector('[ng-app], [data-ng-app]')).length == 0)
             return;
 
           var el = document.querySelector('[ng-app], [data-ng-app]');
