@@ -5,12 +5,14 @@ module Capybara
 
       def initialize(page)
         @page = page
+        @setup_ready_count = 0
       end
 
       def wait_until_ready
         return unless angular_app?
 
         setup_ready
+        @setup_ready_count += 1
 
         start = Time.now
         until ready?
@@ -18,6 +20,7 @@ module Capybara
           if page_reloaded_on_wait?
             return unless angular_app?
             setup_ready
+            @setup_ready_count += 1
           end
           sleep(0.01)
         end
@@ -30,7 +33,7 @@ module Capybara
       end
 
       def timeout!
-        raise TimeoutError.new("timeout while waiting for angular")
+        raise TimeoutError.new("timeout while waiting for angular #{@setup_ready_count}" + page.driver.network_traffic.select { |t| t.response_parts.empty? }.map(&:inspect).join("\n\n"))
       end
 
       def ready?
@@ -48,7 +51,9 @@ module Capybara
 
       def setup_ready
         page.execute_script <<-JS
-          window.angularReady = false;
+          // TODO(edward): this is so questionable combined with the sleep and the notifyWhenNoOutstandingRequests
+          // there should be a single reference
+          window.angularReady = window.angularReady || false;
 
           if ((typeof angular === 'undefined') || angular.element(document.querySelector('[ng-app], [data-ng-app]')).length == 0)
             return;
@@ -63,7 +68,7 @@ module Capybara
             } else {
               document.attachEvent('onreadystatechange', function() {
                 if (document.readyState !== 'loading')
-                  fn();
+                  fn(); // TODO(edward): does this only happen once? does the readyState only go from loading -> something else?
               });
             }
           }
