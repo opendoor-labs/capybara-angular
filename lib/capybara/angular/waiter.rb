@@ -33,7 +33,8 @@ module Capybara
       end
 
       def timeout!
-        raise TimeoutError.new("timeout while waiting for angular #{@setup_ready_count}" + page.driver.network_traffic.select { |t| t.response_parts.empty? }.map(&:inspect).join("\n\n"))
+        active_requests = page.driver.network_traffic.select { |t| t.response_parts.empty? }
+        raise TimeoutError.new("timeout while waiting for angular, setup_ready_count #{@setup_ready_count}, num active_requests #{active_requests.count}, requests: " + page.driver.network_traffic.select { |t| t.response_parts.empty? }.map(&:inspect).join("\n\n") + " requests end")
       end
 
       def ready?
