@@ -34,7 +34,20 @@ module Capybara
 
       def timeout!
         active_requests = page.driver.network_traffic.select { |t| t.response_parts.empty? }
-        raise TimeoutError.new("timeout while waiting for angular, setup_ready_count #{@setup_ready_count}, num active_requests #{active_requests.count}, requests: " + page.driver.network_traffic.select { |t| t.response_parts.empty? }.map(&:inspect).join("\n\n") + " requests end")
+        outstandingRequestInfo = page.evaluate_script <<-JS
+          (function() {
+            var ngAppEl = document.querySelector('[ng-app], [data-ng-app]');
+            var timeoutBrowser = angular.element(ngAppEl).injector().get('$browser');
+            return "" + timeoutBrowser.getOutstandingRequestCount() + ": " + timeoutBrowser.getOutstandingRequestCallbacks().map(function(fn) { return fn.toString(); });
+          })();
+        JS
+
+        timeoutInfo = [
+          "timeout while waiting for angular, setup_ready_count #{@setup_ready_count}, num active_requests #{active_requests.count}",
+          "requests: " + page.driver.network_traffic.select { |t| t.response_parts.empty? }.map(&:inspect).join("\n\n") + " requests end",
+          outstandingRequestInfo
+        ]
+        raise TimeoutError.new(timeoutInfo.join("\n"))
       end
 
       def ready?
@@ -86,6 +99,22 @@ module Capybara
           });
 
         JS
+
+        if page.driver.network_traffic.count { |t| t.response_parts.empty? } == 0
+          outstandingRequestInfo = page.evaluate_script <<-JS
+            (function() {
+              var ngAppEl = document.querySelector('[ng-app], [data-ng-app]');
+              var timeoutBrowser = angular.element(ngAppEl).injector().get('$browser');
+              if (timeoutBrowser.getOutstandingRequestCount() == 0) {
+                return "";
+              }
+              return "" + timeoutBrowser.getOutstandingRequestCount() + ": " + timeoutBrowser.getOutstandingRequestCallbacks().map(function(fn) { return fn.toString(); });
+            })();
+          JS
+          if outstandingRequestInfo != ""
+            puts outstandingRequestInfo
+          end
+        end
       end
 
       def page_reloaded_on_wait?
