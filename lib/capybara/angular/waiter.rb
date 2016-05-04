@@ -38,7 +38,7 @@ module Capybara
           (function() {
             var ngAppEl = document.querySelector('[ng-app], [data-ng-app]');
             var timeoutBrowser = angular.element(ngAppEl).injector().get('$browser');
-            return "" + timeoutBrowser.getOutstandingRequestCount() + ": " + timeoutBrowser.getOutstandingRequestInfo() + '\n outstandingRequestCallbacks: ' + timeoutBrowser.getOutstandingRequestCallbacks().map(function(fn) { return fn.toString(); });
+            return "" + timeoutBrowser.getOutstandingRequestCount() + ": " + timeoutBrowser.getOutstandingRequestInfo() + "\\n outstandingRequestCallbacks: " + timeoutBrowser.getOutstandingRequestCallbacks().map(function(fn) { return fn.toString(); });
           })();
         JS
 
@@ -108,7 +108,7 @@ module Capybara
               if (timeoutBrowser.getOutstandingRequestCount() == 0) {
                 return "";
               }
-              return "" + timeoutBrowser.getOutstandingRequestCount() + ": " + timeoutBrowser.getOutstandingRequestInfo() + '\n outstandingRequestCallbacks: ' + timeoutBrowser.getOutstandingRequestCallbacks().map(function(fn) { return fn.toString(); });
+              return "" + timeoutBrowser.getOutstandingRequestCount() + ": " + timeoutBrowser.getOutstandingRequestInfo() + "\\n outstandingRequestCallbacks: " + timeoutBrowser.getOutstandingRequestCallbacks().map(function(fn) { return fn.toString(); });
             })();
           JS
           if outstandingRequestInfo != ""
