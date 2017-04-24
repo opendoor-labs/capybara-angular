@@ -61,7 +61,7 @@ module Capybara
             try {
               angular.getTestability(el).whenStable(function() { window.angularReady = true; });
             }
-            catch(e) { window.angularReady = undefined; }
+            catch(e) { return; }
           } else {
             var $browser = angular.element(el).injector().get('$browser');
 
