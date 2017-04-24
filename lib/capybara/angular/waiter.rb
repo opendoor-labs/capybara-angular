@@ -46,27 +46,20 @@ module Capybara
       end
 
       def setup_ready
-        page.execute_script <<-JS
-          var el = document.querySelector('[ng-app], [data-ng-app]') || document.querySelector('body');
+        page.evaluate_script <<-JS
           window.angularReady = false;
 
           if (typeof angular === 'undefined')
             return;
 
-          var el = document.querySelector('[ng-app], [data-ng-app]');
+          var el = document.querySelector('[ng-app], [data-ng-app]') || document.querySelector('body');
           if (!el)
             return;
 
           if (angular.getTestability) {
-            try {
-              angular.getTestability(el).whenStable(function() { window.angularReady = true; });
-            }
-            catch(e) { window.angularReady = undefined; }
+            angular.getTestability(el).whenStable(function() { window.angularReady = true; });
           } else {
-            var $browser = angular.element(el).injector().get('$browser');
-
-            if ($browser.outstandingRequestCount > 0) { window.angularReady = false; }
-            $browser.notifyWhenNoOutstandingRequests(function() { window.angularReady = true; });
+            throw "No fuckin way";
           }
         JS
       end
