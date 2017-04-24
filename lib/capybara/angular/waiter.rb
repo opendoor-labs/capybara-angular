@@ -14,7 +14,7 @@ module Capybara
 
         start = Time.now
         until ready?
-          return if timeout?(start)
+          timeout! if timeout?(start)
           if page_reloaded_on_wait?
             return unless angular_app?
             setup_ready
