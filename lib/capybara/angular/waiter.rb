@@ -59,7 +59,7 @@ module Capybara
               console.log(e.message);
               console.log(el.tagName);
               for (i = 0; i < el.attributes.length; i++) {
-                console.log(el.attributes[i]);
+                console.log(el.attributes[i].name + '=' + el.attributes[i].value);
               }
               window.angularReady = undefined;
             }
