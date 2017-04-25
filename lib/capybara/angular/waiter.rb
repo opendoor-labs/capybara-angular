@@ -38,8 +38,7 @@ module Capybara
       end
 
       def angular_app?
-        js = "(typeof angular !== 'undefined') && "
-        js += "angular.element(document.querySelector('[ng-app], [data-ng-app]')).length > 0"
+        js = '!!window.angular'
         page.evaluate_script js
 
       rescue Capybara::NotSupportedByDriverError
