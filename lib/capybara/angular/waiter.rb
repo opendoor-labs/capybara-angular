@@ -51,7 +51,7 @@ module Capybara
 
           window.angularReady = false;
 
-          if(!angular) {
+          if (typeof angular === 'undefined') {
             window.angularReady = undefined;
             return;
           }
