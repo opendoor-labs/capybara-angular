@@ -52,7 +52,14 @@ module Capybara
           window.angularReady = false;
 
           if (angular.getTestability) {
-            angular.getTestability(el).whenStable(function() { window.angularReady = true; });
+            try {
+              angular.getTestability(el).whenStable(function() { window.angularReady = true; });
+            } catch(e) {
+              console.log("*************************");
+              console.log(e.message);
+              console.log(el);
+              window.angularReady = undefined;
+            }
           } else {
             var $browser = angular.element(el).injector().get('$browser');
 
