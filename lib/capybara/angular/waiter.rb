@@ -51,6 +51,11 @@ module Capybara
 
           window.angularReady = false;
 
+          if(!angular) {
+            window.angularReady = undefined;
+            return;
+          }
+
           if (angular.getTestability) {
             try {
               angular.getTestability(el).whenStable(function() { window.angularReady = true; });
