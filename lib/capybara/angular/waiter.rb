@@ -57,7 +57,10 @@ module Capybara
             } catch(e) {
               console.log("*************************");
               console.log(e.message);
-              console.log(el);
+              console.log(el.tagName);
+              for (i = 0; i < el.attributes.length; i++) {
+                console.log(el.attributes[i]);
+              }
               window.angularReady = undefined;
             }
           } else {
