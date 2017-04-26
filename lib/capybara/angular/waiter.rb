@@ -47,14 +47,14 @@ module Capybara
 
       def setup_ready
         page.evaluate_script <<-JS
-          window.angularReady = false;
-
           if (typeof angular === 'undefined')
             return;
 
           var el = document.querySelector('[ng-app], [data-ng-app]') || document.querySelector('body');
           if (!el)
             return;
+
+          window.angularReady = false;
 
           if (angular.getTestability) {
             angular.getTestability(el).whenStable(function() { window.angularReady = true; });
